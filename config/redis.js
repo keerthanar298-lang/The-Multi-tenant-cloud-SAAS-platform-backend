@@ -18,6 +18,14 @@ if (redisEnabled) {
   redisClient.on("ready", () => {
     console.log(`Redis connected: ${clientOptions.url}`);
   });
+
+  redisClient.on("error", (error) => {
+    console.error("Redis Client Error:", error);
+  });
+
+  redisClient.on("end", () => {
+    console.warn("Redis connection closed");
+  });
 }
 
 if (isProduction && !redisUrl) {
@@ -25,14 +33,6 @@ if (isProduction && !redisUrl) {
     "No REDIS_URL found in production. Redis cache will be disabled.",
   );
 }
-
-redisClient.on("error", (error) => {
-  console.error("Redis Client Error:", error);
-});
-
-redisClient.on("end", () => {
-  console.warn("Redis connection closed");
-});
 
 const connectRedis = async () => {
   try {
